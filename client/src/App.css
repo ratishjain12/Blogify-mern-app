@@ -150,3 +150,9 @@ button {
   margin-bottom: 20px;
   margin-inline: auto;
 }
+
+@media (max-width: 376px) {
+  .form-container {
+    max-width: 300px;
+  }
+}
