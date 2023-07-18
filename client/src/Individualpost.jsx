@@ -43,7 +43,7 @@ function Individualpost() {
       )}
 
       <img
-        src={`http://localhost:5000/${postData.file}`}
+        src={`https://blogify-backend-b1kr.onrender.com/${postData.file}`}
         className="individual-img"
       />
 
