@@ -113,7 +113,7 @@ button {
 .noposts {
   display: grid;
   place-items: center;
-  margin-top: 30%;
+  margin-top: 250px;
 }
 
 .image {

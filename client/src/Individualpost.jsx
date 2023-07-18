@@ -7,11 +7,13 @@ function Individualpost() {
   const [postData, setPostData] = useState();
   const { userInfo } = useContext(UserContext);
   useEffect(() => {
-    fetch(`http://localhost:5000/post/${id}`).then((res) => {
-      res.json().then((data) => {
-        setPostData(data[0]);
-      });
-    });
+    fetch(`https://blogify-backend-b1kr.onrender.com/post/${id}`).then(
+      (res) => {
+        res.json().then((data) => {
+          setPostData(data[0]);
+        });
+      }
+    );
   }, []);
   console.log(postData);
   if (!postData) return "";

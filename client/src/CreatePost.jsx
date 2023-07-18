@@ -58,11 +58,14 @@ function CreatePost() {
     data.set("content", content);
     data.set("file", file[0]);
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/create", {
-      method: "POST",
-      body: data,
-      credentials: "include",
-    });
+    const response = await fetch(
+      "https://blogify-backend-b1kr.onrender.com/create",
+      {
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }
+    );
     if (response.ok) {
       setRedirect(true);
     }

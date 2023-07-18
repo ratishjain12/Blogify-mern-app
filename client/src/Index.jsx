@@ -5,12 +5,14 @@ function Index() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/fetchPosts").then((response) => {
-      response.json().then((post) => {
-        setPosts(post);
-        console.log(post);
-      });
-    });
+    fetch("https://blogify-backend-b1kr.onrender.com/fetchPosts").then(
+      (response) => {
+        response.json().then((post) => {
+          setPosts(post);
+          console.log(post);
+        });
+      }
+    );
   }, []);
 
   return (

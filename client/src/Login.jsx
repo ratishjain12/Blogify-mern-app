@@ -9,12 +9,15 @@ function Login() {
 
   async function login(e) {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+    const response = await fetch(
+      "https://blogify-backend-b1kr.onrender.com/login",
+      {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }
+    );
 
     console.log(response);
     if (response.ok) {
