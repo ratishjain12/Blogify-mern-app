@@ -29,7 +29,7 @@ function Header() {
     <header>
       <div className="header-wrapper container">
         <Link to="/" className="logo">
-          MyBlog
+          Blogify
         </Link>
         <nav>
           {username && (
