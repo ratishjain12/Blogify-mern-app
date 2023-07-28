@@ -6,13 +6,11 @@ function Post({ title, summary, file, createdAt, author, _id }) {
   return (
     <div className="post-container">
       <div className="post">
-        <Link to={`/post/${_id}`}>
-          <img
-            className="image"
-            src={`${import.meta.env.VITE_BASE_URL}${file}`}
-            alt=""
-          />
-        </Link>
+        <img
+          className="image"
+          src={`${import.meta.env.VITE_BASE_URL}${file}`}
+          alt=""
+        />
 
         <div className="content">
           <Link to={`/post/${_id}`}>
