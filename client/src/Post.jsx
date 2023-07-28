@@ -5,26 +5,28 @@ function Post({ title, summary, file, createdAt, author, _id }) {
   console.log(file);
   return (
     <div className="post-container">
-      <Link to={`/post/${_id}`}>
-        <div className="post">
+      <div className="post">
+        <Link to={`/post/${_id}`}>
           <img
             className="image"
             src={`${import.meta.env.VITE_BASE_URL}${file}`}
             alt=""
           />
+        </Link>
 
-          <div className="content">
+        <div className="content">
+          <Link to={`/post/${_id}`}>
             <h2>{title}</h2>
+          </Link>
 
-            <div className="info">
-              <b style={{ marginRight: "10px" }}>{author.username}</b>
+          <div className="info">
+            <b style={{ marginRight: "10px" }}>{author.username}</b>
 
-              <time>{format(new Date(createdAt), "MMM d, yyyy HH:mm")}</time>
-            </div>
-            <p>{summary}</p>
+            <time>{format(new Date(createdAt), "MMM d, yyyy HH:mm")}</time>
           </div>
+          <p>{summary}</p>
         </div>
-      </Link>
+      </div>
     </div>
   );
 }
