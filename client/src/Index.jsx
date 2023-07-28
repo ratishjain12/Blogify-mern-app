@@ -5,7 +5,7 @@ function Index() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("https://blogify-backend-b1kr.onrender.com/fetchPosts").then(
+    fetch("https://blogify-backend-xt5z.onrender.com/fetchPosts").then(
       (response) => {
         response.json().then((post) => {
           setPosts(post);

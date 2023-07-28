@@ -59,7 +59,7 @@ function CreatePost() {
     data.set("file", file[0]);
     e.preventDefault();
     const response = await fetch(
-      "https://blogify-backend-b1kr.onrender.com/create",
+      "https://blogify-backend-xt5z.onrender.com/create",
       {
         method: "POST",
         body: data,

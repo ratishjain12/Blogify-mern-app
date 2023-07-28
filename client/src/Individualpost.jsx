@@ -7,7 +7,7 @@ function Individualpost() {
   const [postData, setPostData] = useState();
   const { userInfo } = useContext(UserContext);
   useEffect(() => {
-    fetch(`https://blogify-backend-b1kr.onrender.com/post/${id}`).then(
+    fetch(`https://blogify-backend-xt5z.onrender.com/post/${id}`).then(
       (res) => {
         res.json().then((data) => {
           setPostData(data[0]);
@@ -43,7 +43,7 @@ function Individualpost() {
       )}
 
       <img
-        src={`https://blogify-backend-b1kr.onrender.com/${postData.file}`}
+        src={`https://blogify-backend-xt5z.onrender.com/${postData.file}`}
         className="individual-img"
       />
 

@@ -67,7 +67,7 @@ function EditPost() {
       data.set("file", file[0]);
     }
 
-    await fetch("https://blogify-backend-b1kr.onrender.com/edit/" + id, {
+    await fetch("https://blogify-backend-xt5z.onrender.com/edit/" + id, {
       method: "PUT",
       body: data,
     });

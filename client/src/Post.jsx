@@ -9,7 +9,7 @@ function Post({ title, summary, file, createdAt, author, _id }) {
         <div className="post">
           <img
             className="image"
-            src={`https://blogify-backend-b1kr.onrender.com/${file}`}
+            src={`https://blogify-backend-xt5z.onrender.com/${file}`}
             alt=""
           />
 
