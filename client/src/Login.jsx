@@ -17,6 +17,7 @@ function Login() {
         "Access-Control-Allow-Credentials": true,
       },
       credentials: "include",
+      withCredentials: true,
     });
 
     console.log(response);
