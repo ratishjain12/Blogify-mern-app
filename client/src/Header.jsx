@@ -5,7 +5,7 @@ import { UserContext } from "./UserContext";
 function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
   useEffect(() => {
-    fetch("https://blogify-backend-xt5z.onrender.com/profile", {
+    fetch(`${import.meta.env.VITE_BASE_URL}profile`, {
       credentials: "include",
     }).then((res) => {
       res.json().then((userInfo) => {
@@ -16,7 +16,7 @@ function Header() {
 
   function logout(e) {
     e.preventDefault();
-    fetch("https://blogify-backend-xt5z.onrender.com/logout", {
+    fetch(`${import.meta.env.VITE_BASE_URL}logout`, {
       credentials: "include",
       method: "POST",
     });

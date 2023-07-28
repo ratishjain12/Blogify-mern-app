@@ -9,7 +9,7 @@ function Post({ title, summary, file, createdAt, author, _id }) {
         <div className="post">
           <img
             className="image"
-            src={`https://blogify-backend-xt5z.onrender.com/${file}`}
+            src={`${import.meta.env.VITE_BASE_URL}${file}`}
             alt=""
           />
 

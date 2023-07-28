@@ -3,16 +3,14 @@ import { useEffect, useState } from "react";
 
 function Index() {
   const [posts, setPosts] = useState([]);
-
+  // console.log(process.env.BASE_URL);
   useEffect(() => {
-    fetch("https://blogify-backend-xt5z.onrender.com/fetchPosts").then(
-      (response) => {
-        response.json().then((post) => {
-          setPosts(post);
-          console.log(post);
-        });
-      }
-    );
+    fetch(`${import.meta.env.VITE_BASE_URL}fetchPosts`).then((response) => {
+      response.json().then((post) => {
+        setPosts(post);
+        console.log(post);
+      });
+    });
   }, []);
 
   return (

@@ -8,14 +8,11 @@ function Register() {
   async function register(e) {
     e.preventDefault();
 
-    const response = await fetch(
-      "https://blogify-backend-xt5z.onrender.com/register",
-      {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-        headers: { "content-type": "application/json" },
-      }
-    );
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}register`, {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+      headers: { "content-type": "application/json" },
+    });
 
     if (response.status === 200) {
       alert("registeration Successful");

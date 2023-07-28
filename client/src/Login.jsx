@@ -9,15 +9,12 @@ function Login() {
 
   async function login(e) {
     e.preventDefault();
-    const response = await fetch(
-      "https://blogify-backend-xt5z.onrender.com/login",
-      {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}login`, {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
 
     console.log(response);
     if (response.ok) {
