@@ -17,7 +17,7 @@ const secret = "zfsfgasfnjrjgwrhoghasckasnfspkovrwvk0vkoaihnas";
 app.use(
   cors({
     credentials: true,
-    origin: ["https://blogify-mern-app.vercel.app", "http://localhost:5173"],
+    origin: "https://blogify-mern-app.vercel.app",
   })
 );
 app.use(express.json());
