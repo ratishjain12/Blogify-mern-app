@@ -49,10 +49,16 @@ app.post("/login", async (req, res) => {
   if (bcrypt.compareSync(password, UserDoc.password)) {
     jwt.sign({ username, id: UserDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
-      res.cookie("token", token, { httpOnly: false, sameSite: "none" }).json({
-        id: UserDoc._id,
-        username,
-      });
+      res
+        .cookie("token", token, {
+          httpOnly: false,
+          sameSite: "none",
+          secure: true,
+        })
+        .json({
+          id: UserDoc._id,
+          username,
+        });
     });
   } else {
     res.status(400).json("wrong credentials");
