@@ -6,7 +6,7 @@ function Post({ title, summary, file, createdAt, author, _id }) {
   return (
     <div className="post-container">
       <div className="post">
-        <div className="image-container" style={{ width: "100px;" }}>
+        <div className="image-container" style={{ width: "100px" }}>
           <img
             className="image"
             src={`${import.meta.env.VITE_BASE_URL}${file}`}
