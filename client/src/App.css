@@ -157,7 +157,7 @@ button {
 
 @media (max-width: 376px) {
   .form-container {
-    max-width: 300px;
+    margin-inline: 10px !important;
     padding-inline: 20px;
   }
   .post {
