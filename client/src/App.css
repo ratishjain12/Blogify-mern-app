@@ -155,7 +155,7 @@ button {
   cursor: pointer;
 }
 
-@media (max-width: 376px) {
+@media (max-width: 470px) {
   .form-container {
     margin-inline: 10px !important;
     padding-inline: 20px;
