@@ -17,12 +17,12 @@ const secret = "zfsfgasfnjrjgwrhoghasckasnfspkovrwvk0vkoaihnas";
 app.use(
   cors({
     credentials: true,
-    origin: "https://blogify-mern-app.vercel.app",
+    origin: ["https://blogify-mern-app.vercel.app", "http://localhost:5173"],
   })
 );
 app.use(express.json());
 app.use(cookieParser());
-
+console.log(__dirname + "/uploads");
 app.use("/uploads", express.static(__dirname + "/uploads")); // local image directory
 
 mongoose.connect(
@@ -142,6 +142,14 @@ app.put("/edit/:id", uploadMiddleware.single("file"), async (req, res) => {
     await Post.updateOne({ _id: id }, { title, content, summary });
     res.json("Updated");
   }
+});
+
+app.post("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+
+  await Post.deleteOne({ _id: id });
+  console.log("deleted");
+  res.json("Deleted!!");
 });
 
 app.listen(5000, () => {

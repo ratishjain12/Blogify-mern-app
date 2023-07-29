@@ -4,12 +4,12 @@ a {
   margin-right: 12px;
 }
 
-img {
+/* img {
   max-width: 40%;
   object-fit: cover;
   border-radius: 10px 0px 0px 10px;
   background-size: 100% 100%;
-}
+} */
 
 .container {
   max-width: 1170px;
@@ -116,10 +116,14 @@ button {
   margin-top: 250px;
 }
 
+.image-container {
+  width: 220pxS;
+}
 .image {
-  height: 200px;
-  width: 300px;
-  object-fit: cover;
+  width: 200px;
+  height: 100%;
+  object-fit: fill;
+  align-self: center;
 }
 
 .individual-img {
@@ -147,12 +151,33 @@ button {
 
 .editBtn {
   width: 100px;
-  margin-bottom: 20px;
-  margin-inline: auto;
+  margin-bottom: 1px;
+  cursor: pointer;
 }
 
 @media (max-width: 376px) {
   .form-container {
     max-width: 300px;
+    padding-inline: 20px;
+  }
+  .post {
+    margin-inline: 10px;
+  }
+  .content {
+    max-width: 50vw;
+    padding: 2px 2px;
+  }
+  .content h2 {
+    font-size: 17px;
+    margin-bottom: 2px;
+  }
+  .image-container {
+    width: 220px;
+  }
+  .image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    align-self: center;
   }
 }

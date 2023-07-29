@@ -45,16 +45,14 @@ function EditPost() {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch("https://blogify-backend-b1kr.onrender.com/post/" + id).then(
-      (response) => {
-        response.json().then((data) => {
-          console.log(data);
-          setTitle(data[0].title);
-          setSummary(data[0].summary);
-          setContent(data[0].content);
-        });
-      }
-    );
+    fetch(`${import.meta.env.VITE_BASE_URL}post/${id}`).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+        setTitle(data[0].title);
+        setSummary(data[0].summary);
+        setContent(data[0].content);
+      });
+    });
   }, []);
 
   async function edit(e) {
