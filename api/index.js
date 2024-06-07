@@ -35,11 +35,7 @@ app.post("/create", upload.single("file"), async (req, res) => {
   const newPath = path + "." + ext;
   fs.renameSync(path, newPath);
   const url = await uploadToCloudinary(newPath);
-  if (url) {
-    fs.unlinkSync(newPath);
-  } else {
-    return;
-  }
+  console.log(url);
   const PostDoc = await Post.create({
     title,
     summary,
@@ -50,7 +46,11 @@ app.post("/create", upload.single("file"), async (req, res) => {
       name: name,
     },
   });
-
+  if (url) {
+    fs.unlinkSync(newPath);
+  } else {
+    return;
+  }
   res.json(PostDoc);
 });
 
