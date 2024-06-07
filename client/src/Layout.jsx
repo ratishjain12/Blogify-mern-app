@@ -3,10 +3,12 @@ import Header from "./Header";
 
 function Layout() {
   return (
-    <main>
+    <>
       <Header />
-      <Outlet />
-    </main>
+      <main className="relative">
+        <Outlet />
+      </main>
+    </>
   );
 }
 export default Layout;

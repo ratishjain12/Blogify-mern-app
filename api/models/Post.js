@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-
 const { Schema, model } = mongoose;
-
+const { CommentSchema } = require("./Comment");
 const PostSchema = new Schema(
   {
     title: String,
@@ -9,9 +8,12 @@ const PostSchema = new Schema(
     content: String,
     file: String,
     author: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      id: String,
+      name: String,
     },
+    comments: [CommentSchema],
+    commentsCount: { type: Number, default: 0 },
+    likesCount: { type: Number, default: 0 },
   },
   {
     timestamps: true,

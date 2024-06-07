@@ -1,52 +1,46 @@
-import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { UserContext } from "./UserContext";
+import { SignedIn, SignedOut, UserButton, useAuth } from "@clerk/clerk-react";
+import { DoorOpen, Scroll } from "lucide-react";
+import { PencilLine } from "lucide-react";
 
 function Header() {
-  const { setUserInfo, userInfo } = useContext(UserContext);
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}profile`, {
-      credentials: "include",
-    }).then((res) => {
-      res.json().then((userInfo) => {
-        setUserInfo(userInfo);
-      });
-    });
-  }, []);
-
-  function logout(e) {
-    e.preventDefault();
-    fetch(`${import.meta.env.VITE_BASE_URL}logout`, {
-      credentials: "include",
-      method: "POST",
-    });
-
-    setUserInfo(null);
-  }
-
-  const username = userInfo?.username;
+  const { isSignedIn } = useAuth();
   return (
-    <header>
-      <div className="header-wrapper container">
+    <header className="w-full flex justify-center">
+      <div className="w-[90%] sm:w-[60%] md:w-[70%] flex items-center m-2 fixed rounded-full top-0 z-50  gap-3 justify-between p-3 backdrop-filter backdrop-blur-lg bg-opacity-5 bg-gray-200 ">
         <Link to="/" className="logo">
-          Blogify
+          <span className="text-xl font-semibold bg-black bg-opacity-50 px-3 py-2 font-mono rounded-full">
+            Blogify
+          </span>
         </Link>
-        <nav>
-          {username && (
+        <nav className="flex items-center gap-2">
+          {isSignedIn && (
             <>
-              <Link to="/create">Create new post</Link>
-              <Link onClick={logout} style={{ cursor: "pointer" }}>
-                Logout
+              <Link to="/blogs">
+                <div className="bg-white  text-black px-2 py-1 font-semibold flex gap-2 items-center  rounded-md">
+                  Blogs
+                  <Scroll size={18} />
+                </div>
+              </Link>
+              <Link to="/create">
+                <div className="bg-black bg-opacity-50 text-white font-semibold flex gap-4 items-center  p-2 rounded-full">
+                  <PencilLine size={18} />
+                </div>
               </Link>
             </>
           )}
 
-          {!username && (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
-            </>
-          )}
+          <SignedOut>
+            <Link to="/signin">
+              <div className="bg-white font-semibold flex gap-2 items-center text-black p-2 rounded-full px-4">
+                Login
+                <DoorOpen size={16} />
+              </div>
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl={"/"} />
+          </SignedIn>
         </nav>
       </div>
     </header>

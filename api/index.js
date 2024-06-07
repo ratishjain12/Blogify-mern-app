@@ -1,18 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const User = require("./models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const multer = require("multer");
 const Post = require("./models/Post");
 const fs = require("fs");
 const app = express();
-
-const uploadMiddleware = multer({ dest: "uploads/" });
-const salt = bcrypt.genSaltSync(10);
-const secret = "zfsfgasfnjrjgwrhoghasckasnfspkovrwvk0vkoaihnas";
+const upload = require("./multer/multerMiddleware");
+const LikeModel = require("./models/Like");
+const {
+  uploadToCloudinary,
+  DeleteFromCloudinary,
+} = require("./cloudinary/cloudinary");
 
 app.use(
   cors({
@@ -22,85 +20,38 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-console.log(__dirname + "/uploads");
-app.use("/uploads", express.static(__dirname + "/uploads")); // local image directory
 
 mongoose.connect(
   "mongodb+srv://ratishjain6:1234@cluster0.rd5kouh.mongodb.net/?retryWrites=true&w=majority"
 );
 
-app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const UserDoc = await User.create({
-      username,
-      password: bcrypt.hashSync(password, salt),
-    });
-    res.json(UserDoc);
-  } catch (err) {
-    res.status(400).json(e);
-  }
-});
-
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  const UserDoc = await User.findOne({ username });
-  if (bcrypt.compareSync(password, UserDoc.password)) {
-    jwt.sign({ username, id: UserDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      res
-        .cookie("token", token, {
-          httpOnly: false,
-          sameSite: "none",
-          secure: true,
-        })
-        .json({
-          id: UserDoc._id,
-          username,
-        });
-    });
-  } else {
-    res.status(400).json("wrong credentials");
-  }
-});
-
-app.get("/profile", (req, res) => {
-  const { token } = req.cookies;
-  if (token) {
-    jwt.verify(token, secret, {}, (err, info) => {
-      if (err) throw err;
-      res.json(info);
-    });
-  }
-});
-
-app.post("/logout", (req, res) => {
-  res.cookie("token", "").json("ok");
-});
-
-app.post("/create", uploadMiddleware.single("file"), async (req, res) => {
+app.post("/create", upload.single("file"), async (req, res) => {
   const { originalname, path } = req.file;
+  const { title, summary, content, userId, name } = req.body;
+  if (!userId || !summary || !content || !name)
+    return res.json({ status: 500, message: "Please Enter all the details!!" });
   const parts = originalname.split(".");
   const ext = parts[parts.length - 1];
   const newPath = path + "." + ext;
-  fs.renameSync(path, path + "." + ext);
-
-  const { token } = req.cookies;
-
-  jwt.verify(token, secret, {}, async (err, info) => {
-    const { title, summary, content } = req.body;
-    if (err) throw err;
-    const PostDoc = await Post.create({
-      title,
-      summary,
-      content,
-      file: newPath,
-      author: info.id,
-    });
-
-    res.json(PostDoc);
+  fs.renameSync(path, newPath);
+  const url = await uploadToCloudinary(newPath);
+  if (url) {
+    fs.unlinkSync(newPath);
+  } else {
+    return;
+  }
+  const PostDoc = await Post.create({
+    title,
+    summary,
+    content,
+    file: url,
+    author: {
+      id: userId,
+      name: name,
+    },
   });
+
+  res.json(PostDoc);
 });
 
 app.get("/", (req, res) => {
@@ -108,20 +59,31 @@ app.get("/", (req, res) => {
 });
 
 app.get("/fetchPosts", async (req, res) => {
-  const posts = await Post.find()
-    .populate("author", ["username"])
-    .sort({ createdAt: -1 })
-    .limit(20);
-  res.json(posts);
+  try {
+    const userId = req.query.userId;
+    const posts = await Post.find().sort({ createdAt: -1 }).lean();
+    const likes = await LikeModel.find({ userId });
+
+    const likedPostIds = new Set(likes.map((like) => like.postId.toString()));
+
+    const postsWithLikeStatus = posts.map((post) => ({
+      ...post,
+      likedByCurrentUser: likedPostIds.has(post._id.toString()),
+    }));
+
+    res.status(200).json(postsWithLikeStatus);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.get("/post/:id", async (req, res) => {
   const id = req.params.id;
-  const post = await Post.find({ _id: id }).populate("author", ["username"]);
+  const post = await Post.find({ _id: id });
   res.json(post);
 });
 
-app.put("/edit/:id", uploadMiddleware.single("file"), async (req, res) => {
+app.put("/edit/:id", upload.single("file"), async (req, res) => {
   const id = req.params.id;
   const title = req.body.title;
   const content = req.body.content;
@@ -132,24 +94,124 @@ app.put("/edit/:id", uploadMiddleware.single("file"), async (req, res) => {
     const parts = originalname.split(".");
     const ext = parts[parts.length - 1];
     const newPath = path + "." + ext;
-    fs.renameSync(path, path + "." + ext);
-    await Post.updateOne(
-      { _id: id },
-      { title, content, summary, file: newPath }
-    );
-    res.json("Updated");
+    fs.renameSync(path, newPath);
+    const blog = await Post.find({ _id: id });
+    const deletedFile = await DeleteFromCloudinary(blog[0].file);
+    if (deletedFile) {
+      const url = await uploadToCloudinary(newPath);
+      if (url) {
+        fs.unlinkSync(newPath);
+      } else {
+        return;
+      }
+
+      await Post.updateOne({ _id: id }, { title, content, summary, file: url });
+      return res.json("Updated");
+    }
+    return res.status.json("Internal server error");
   } else {
     await Post.updateOne({ _id: id }, { title, content, summary });
     res.json("Updated");
   }
 });
 
-app.post("/delete/:id", async (req, res) => {
+app.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
+  try {
+    await Post.deleteOne({ _id: id });
+    res.status(200).json("Deleted!!");
+  } catch (err) {
+    res.status(500).json("Internal server error");
+  }
+});
 
-  await Post.deleteOne({ _id: id });
-  console.log("deleted");
-  res.json("Deleted!!");
+//likes add and removal
+app.post("/posts/:postId/likes", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { userId, userName } = req.body;
+
+    const like = await LikeModel.findOne({ postId, userId });
+
+    if (like) {
+      // User has already liked the post, so remove the like (unlike)
+      await LikeModel.deleteOne({ _id: like._id });
+      await Post.findByIdAndUpdate(postId, { $inc: { likesCount: -1 } });
+    } else {
+      // User has not liked the post, so add the like
+      await LikeModel.create({ postId, userId, userName });
+      await Post.findByIdAndUpdate(postId, { $inc: { likesCount: 1 } });
+    }
+
+    const updatedPost = await Post.findById(postId).lean();
+    const likedByCurrentUser = !like;
+
+    res.status(200).json({ ...updatedPost, likedByCurrentUser });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//comment
+// Endpoint to add a comment to a post
+
+app.post("/posts/:postId/comments", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const commentData = req.body;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    post.comments.push(commentData);
+    post.commentsCount += 1;
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ error: `Internal server error: ${error.message}` });
+  }
+});
+
+// Endpoint to remove a comment from a post
+app.delete("/posts/:postId/comments/:commentId", async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    await Post.updateOne(
+      { _id: postId },
+      {
+        $pull: {
+          comments: {
+            _id: commentId,
+          },
+        },
+      }
+    );
+
+    await Post.updateOne(
+      { _id: postId },
+      {
+        $inc: { commentsCount: -1 },
+      }
+    );
+    res.status(200).json("comment deleted!!!");
+  } catch (error) {
+    res.status(500).json({ error: `Internal server error: ${error.message}` });
+  }
 });
 
 app.listen(5000, () => {
