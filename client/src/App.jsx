@@ -5,9 +5,9 @@ import CreatePost from "./CreatePost";
 import Index from "./Index";
 import Individualpost from "./Individualpost";
 import EditPost from "./EditPost";
-import Signin from "./SignIn";
+import Signin from "./Login";
 import PrivateRoute from "./PrivateRoute";
-import Signup from "./SignUp";
+import Signup from "./register";
 import ShowBlogs from "./ShowBlogs";
 
 function App() {
