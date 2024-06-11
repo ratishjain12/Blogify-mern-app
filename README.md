@@ -1,4 +1,4 @@
-# Blogify-mern-app
+# Blogify : A platform for developers to add blogs 
 ## Description: MERN Stack Blog App with Clerk authentication and Cloudinary
 
 The MERN Stack Blog App with clerk Authentication and MongoDB Database is a powerful and versatile web application designed to provide users with a seamless and secure blogging experience. Built on the popular MERN (MongoDB, Express.js, React.js, Node.js) technology stack, this app combines the best of each component to create a dynamic and interactive platform for bloggers and readers alike.
