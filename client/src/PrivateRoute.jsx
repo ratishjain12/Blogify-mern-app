@@ -10,7 +10,7 @@ const PrivateRoute = () => {
   useEffect(() => {
     if (isSignedIn === false)
       return navigate("/signin", { state: { url: location.pathname } });
-  }, []);
+  }, [isSignedIn]);
 
   return <Outlet />;
 };

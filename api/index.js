@@ -7,11 +7,13 @@ const fs = require("fs");
 const app = express();
 const upload = require("./multer/multerMiddleware");
 const LikeModel = require("./models/Like");
+const dotenv = require("dotenv");
 const {
   uploadToCloudinary,
   DeleteFromCloudinary,
 } = require("./cloudinary/cloudinary");
 
+dotenv.config();
 app.use(
   cors({
     credentials: true,
@@ -213,7 +215,7 @@ app.delete("/posts/:postId/comments/:commentId", async (req, res) => {
     res.status(500).json({ error: `Internal server error: ${error.message}` });
   }
 });
-
-app.listen(5000, () => {
+const port = process.env.PORT || 1337;
+app.listen(port, () => {
   console.log("server running on port 5000");
 });

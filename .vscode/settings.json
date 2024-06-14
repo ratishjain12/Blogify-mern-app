@@ -1,0 +1,5 @@
+{
+  "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
+  "appService.defaultWebAppToDeploy": "/subscriptions/ffdbd83b-ad31-46f5-b795-68775197c160/resourceGroups/backend/providers/Microsoft.Web/sites/blog-website-backend",
+  "appService.deploySubpath": "api"
+}
