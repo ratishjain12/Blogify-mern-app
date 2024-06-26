@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 // eslint-disable-next-line react/prop-types
 const ExpandableSearch = ({ onSearch }) => {
@@ -8,15 +8,7 @@ const ExpandableSearch = ({ onSearch }) => {
   const inputRef = useRef();
 
   const handleSearchClick = () => {
-    setIsExpanded((prev) => {
-      if (prev === true) {
-        setIsExpanded(false);
-        inputRef.current.blur();
-      } else {
-        setIsExpanded(true);
-        inputRef.current.focus();
-      }
-    });
+    setIsExpanded(true);
   };
 
   const handleSearch = useCallback(
@@ -32,12 +24,25 @@ const ExpandableSearch = ({ onSearch }) => {
     handleSearch(search);
   };
 
+  const handleClickOutside = (e) => {
+    if (inputRef.current && !inputRef.current.contains(e.target)) {
+      setIsExpanded(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <div className="flex items-center justify-center">
       <div
         className={`transition-all duration-300 ${
           isExpanded ? "w-64" : "w-2"
         } relative`}
+        onClick={handleSearchClick}
       >
         <input
           type="text"
@@ -55,7 +60,6 @@ const ExpandableSearch = ({ onSearch }) => {
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          onClick={handleSearchClick}
         >
           <path
             strokeLinecap="round"
