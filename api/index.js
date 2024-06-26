@@ -154,7 +154,6 @@ app.post("/posts/:postId/likes", async (req, res) => {
   }
 });
 
-//comment
 // Endpoint to add a comment to a post
 
 app.post("/posts/:postId/comments", async (req, res) => {
@@ -215,7 +214,27 @@ app.delete("/posts/:postId/comments/:commentId", async (req, res) => {
     res.status(500).json({ error: `Internal server error: ${error.message}` });
   }
 });
+
+//search functionality
+
+app.get("/search", async (req, res) => {
+  const { q } = req.query;
+  if (!q) {
+    res.status(500).json({ error: "query param is missing" });
+  }
+
+  try {
+    const regex = new RegExp(q, "i");
+    const posts = await Post.find({
+      $or: [{ title: regex }, { summary: regex }],
+    });
+    return res.status(200).json({ posts: posts });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
 const port = process.env.PORT || 1337;
 app.listen(port, () => {
-  console.log("server running on port 5000");
+  console.log(`server running on port ${port}`);
 });
